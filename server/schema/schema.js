@@ -17,12 +17,26 @@ var curryN = require('lodash/fp/curryN');
 
 //dummy data
  var usersData = [
-     {id:"1",name:"user1",age:11},
-     {id:"2",name:"user2",age:22},
-     {id:"3",name:"user3",age:33},
-     {id:"4",name:"user4",age:44},
-     {id:"5",name:"user5",age:55},
+     {id:"1",name:"user1",age:11,profression:"prof1"},
+     {id:"2",name:"user2",age:22,profression:"prof1"},
+     {id:"3",name:"user3",age:33,profression:"prof1"},
+     {id:"4",name:"user4",age:44,profression:"prof1"},
+     {id:"5",name:"user5",age:55,profression:"prof1"},
  ]
+ var hobbiesData = [
+    {id:"1",title:"user1",description:"hobby desc 1"},
+    {id:"2",name:"user2",description:"hobby desc 1"},
+    {id:"3",name:"user3",description:"hobby desc 1"},
+    {id:"4",name:"user4",description:"hobby desc 1"},
+    {id:"5",name:"user5",description:"hobby desc 1" },
+]
+var postsData = [
+    {id:"1",comment:"post comment 1"},
+    {id:"2",comment:"post comment 2"},
+    {id:"3",comment:"post comment 3"},
+    {id:"4",comment:"post comment 4"},
+    {id:"5",comment:"post comment 5" },
+]
 
 const{
 
@@ -40,9 +54,28 @@ const UserType = new GraphQLObjectType({
     name:'User',
     description:'Desc',
     fields: () => ({
-        id: {type : GraphQLString},
+        id: {type : GraphQLID},
         name: {type : GraphQLString},
-        age: {type : GraphQLInt}
+        age: {type : GraphQLInt},
+        profression:{type: GraphQLString}
+        
+    })
+})
+const HobbyType = new GraphQLObjectType({
+    name:'Hobby',
+    description:'Hobby Desc',
+    fields: () => ({
+        id: {type : GraphQLID},
+        title: {type : GraphQLString},
+        description:{type: GraphQLString}
+    })
+})
+const PostType = new GraphQLObjectType({
+    name:'Post',
+    description:'Post Desc',
+    fields: () => ({
+        id: {type : GraphQLID},
+        comment: {type : GraphQLString}
     })
 })
 
@@ -67,7 +100,25 @@ const RootQuery = new GraphQLObjectType({
                 //We resolve with data
                 //get and retrun data from datasource
             }
-        }
+        },
+
+        hobby:{
+            type:HobbyType,
+            args:{id: {type:GraphQLID}},
+            resolve(parent,args){
+                //retrun data from our hobby
+                return _.find(hobbiesData,{id: args.id})
+            }
+        },
+
+        post:{
+            type:PostType,
+            args:{id: {type:GraphQLID}},
+            resolve(parent,args){
+                //retrun data from our hobby
+                return _.find(postsData,{id: args.id})
+            }
+        },
     }
     
 })

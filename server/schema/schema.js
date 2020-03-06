@@ -18,24 +18,24 @@ var curryN = require('lodash/fp/curryN');
 //dummy data
  var usersData = [
      {id:"1",name:"user1",age:11,profression:"prof1"},
-     {id:"2",name:"user2",age:22,profression:"prof1"},
-     {id:"3",name:"user3",age:33,profression:"prof1"},
-     {id:"4",name:"user4",age:44,profression:"prof1"},
-     {id:"5",name:"user5",age:55,profression:"prof1"},
+     {id:"2",name:"user2",age:22,profression:"prof2"},
+     {id:"3",name:"user3",age:33,profression:"prof3"},
+     {id:"4",name:"user4",age:44,profression:"prof4"},
+     {id:"5",name:"user5",age:55,profression:"prof5"},
  ]
  var hobbiesData = [
-    {id:"1",title:"user1",description:"hobby desc 1"},
-    {id:"2",name:"user2",description:"hobby desc 1"},
-    {id:"3",name:"user3",description:"hobby desc 1"},
-    {id:"4",name:"user4",description:"hobby desc 1"},
-    {id:"5",name:"user5",description:"hobby desc 1" },
+    {id:"1",title:"user1",description:"hobby desc 1", userId: "1"},
+    {id:"2",name:"user2",description:"hobby desc 2", userId: "1"},
+    {id:"3",name:"user3",description:"hobby desc 3", userId: "1"},
+    {id:"4",name:"user4",description:"hobby desc 4", userId: "1"},
+    {id:"5",name:"user5",description:"hobby desc 5" , userId: "1"},
 ]
 var postsData = [
-    {id:"1",comment:"post comment 1"},
-    {id:"2",comment:"post comment 2"},
-    {id:"3",comment:"post comment 3"},
-    {id:"4",comment:"post comment 4"},
-    {id:"5",comment:"post comment 5" },
+    {id:"1",comment:"post comment 1", userId: "1"},
+    {id:"2",comment:"post comment 2", userId: "1"},
+    {id:"3",comment:"post comment 3", userId: "3"},
+    {id:"4",comment:"post comment 4", userId: "3"},
+    {id:"5",comment:"post comment 5" , userId: "2"},
 ]
 
 const{
@@ -67,7 +67,14 @@ const HobbyType = new GraphQLObjectType({
     fields: () => ({
         id: {type : GraphQLID},
         title: {type : GraphQLString},
-        description:{type: GraphQLString}
+        description:{type: GraphQLString},
+        user:{
+            type:UserType,
+            resolve(parent,args){
+                //retrun data from our hobby
+                return _.find(usersData,{id: parent.userId})
+            }
+        },
     })
 })
 const PostType = new GraphQLObjectType({
@@ -75,7 +82,14 @@ const PostType = new GraphQLObjectType({
     description:'Post Desc',
     fields: () => ({
         id: {type : GraphQLID},
-        comment: {type : GraphQLString}
+        comment: {type : GraphQLString},
+        user:{
+            type:UserType,
+            resolve(parent,args){
+                //retrun data from our hobby
+                return _.find(usersData,{id: parent.userId})
+            }
+        },
     })
 })
 
@@ -119,7 +133,7 @@ const RootQuery = new GraphQLObjectType({
                 return _.find(postsData,{id: args.id})
             }
         },
-    }
+    } 
     
 })
 
